@@ -64,7 +64,7 @@ const createRecursiveMockProxy = (name: string) => {
     get: (obj, prop, receiver) => {
       const propName = prop.toString();
 
-      if (prop in t || jestFnProps.has(propName)) {
+      if (jestFnProps.has(propName)) {
         return Reflect.get(obj, prop, receiver);
       }
 
@@ -86,6 +86,10 @@ const createRecursiveMockProxy = (name: string) => {
       cache.set(prop, mockedProp);
 
       return mockedProp;
+    },
+    set: (obj, prop, newValue) => {
+      cache.set(prop, newValue);
+      return Reflect.set(obj, prop, newValue);
     },
   });
 };

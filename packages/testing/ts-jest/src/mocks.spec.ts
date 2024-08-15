@@ -214,7 +214,9 @@ describe('Mocks', () => {
     it('mockReset() should work on nested properties, when using the jest-when lib', () => {
       const mock = createMock<any>();
       when(mock.nested).defaultImplementation(() => 'default');
+      expect(mock.nested()).toEqual('default');
       when(mock.nested).defaultImplementation(() => 'default2');
+      expect(mock.nested()).toEqual('default2');
       mock.nested.mockReset();
     });
 
