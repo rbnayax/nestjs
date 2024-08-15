@@ -2,7 +2,6 @@ import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock, DeepMocked } from './mocks';
-import { when } from 'jest-when';
 
 interface TestInterface {
   someNum: number;
@@ -211,13 +210,13 @@ describe('Mocks', () => {
       expect(mock.nested.toString()).toEqual('function () { [native code] }');
     });
 
-    it('mockReset() should work on nested properties, when using the jest-when lib', () => {
+    it('nested properties mocks should be able to set properties and override cache', () => {
       const mock = createMock<any>();
-      when(mock.nested).defaultImplementation(() => 'default');
-      expect(mock.nested()).toEqual('default');
-      when(mock.nested).defaultImplementation(() => 'default2');
-      expect(mock.nested()).toEqual('default2');
-      mock.nested.mockReset();
+      const autoMockedFn = mock.nested.f;
+      expect(typeof autoMockedFn).toEqual('function');
+      const myFn = () => 5;
+      mock.nested.f = myFn;
+      expect(mock.nested.f === myFn).toBeTruthy();
     });
 
     it('should allow for mock implementation on automocked properties', () => {
