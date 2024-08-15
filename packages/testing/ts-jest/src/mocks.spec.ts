@@ -2,6 +2,7 @@ import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock, DeepMocked } from './mocks';
+import { when } from 'jest-when';
 
 interface TestInterface {
   someNum: number;
@@ -208,6 +209,13 @@ describe('Mocks', () => {
       const mock = createMock<any>();
       expect(mock.toString()).toEqual('[object Object]');
       expect(mock.nested.toString()).toEqual('function () { [native code] }');
+    });
+
+    it('mockReset() should work on nested properties, when using the jest-when lib', () => {
+      const mock = createMock<any>();
+      when(mock.nested).defaultImplementation(() => 'default');
+      when(mock.nested).defaultImplementation(() => 'default2');
+      mock.nested.mockReset();
     });
 
     it('should allow for mock implementation on automocked properties', () => {
